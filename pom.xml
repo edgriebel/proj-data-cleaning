@@ -24,9 +24,17 @@
 			</plugin>
 			<!-- this gets us a nice website if we build site:site or site:run -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.7.1</version>
+			</plugin>
+			<!-- this loads source and javadocs for Eclipse IDE -->
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
 			</plugin>
 			<!-- this builds an uberjar with all dependencies built in -->
 			<plugin>

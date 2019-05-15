@@ -1,104 +1,108 @@
 package com.edgriebel.dataCleaning;
 
-import java.util.Date;
-
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvDate;
 
 public class Record {
 
-	@CsvBindByName
-	@CsvDate("MM/dd/yy hh:mm:ss aa")
-	private Date Timestamp;
+	/**
+	 * Even though we know this is a timestamp and we can 
+	 * convert it to a java.util.Date, we can't control
+	 * the output format for the date so we'll keep
+	 * this as a string and to String->Date->String in 
+	 * another method.
+	 */ 
+	@CsvBindByName(column="Timestamp", locale="UTF-8")
+	// @CsvDate("MM/dd/yy hh:mm:ss aa")
+	private String timestamp;
 	
-	@CsvBindByName(column="Address")
-	protected String Address;
+	@CsvBindByName(column="Address", locale="UTF-8")
+	protected String address;
 	
-	@CsvBindByName
-	private String ZIP;
+	@CsvBindByName(column="ZIP", locale="UTF-8")
+	private String zip;
 	
-	@CsvBindByName
+	@CsvBindByName(column="FullName", locale="UTF-8")
 	// @CsvCustomBindByName(converter = MyClass.class)
-	private String FullName;
+	private String fullName;
 	
-	@CsvBindByName
-	private String FooDuration;
+	@CsvBindByName(column="FooDuration", locale="UTF-8")
+	private String fooDuration;
 	
-	@CsvBindByName
-	private String BarDuration;
+	@CsvBindByName(column="BarDuration", locale="UTF-8")
+	private String barDuration;
 	
-	@CsvBindByName
-	private String TotalDuration;
+	@CsvBindByName(column="TotalDuration", locale="UTF-8")
+	private String totalDuration;
 	
-	@CsvBindByName
-	private String Notes;
+	@CsvBindByName(column="Notes", locale="UTF-8")
+	private String notes;
 
-	public Date getTimestamp() {
-		return Timestamp;
+	public String toString() {
+		return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
+				timestamp, address, zip, fullName, fooDuration, barDuration, totalDuration, notes);
 	}
 
-	public void setTimestamp(Date timestamp) {
-		Timestamp = timestamp;
+	public String getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	public String getAddress() {
-		return Address;
+		return address;
 	}
 
 	public void setAddress(String address) {
-		Address = address;
+		this.address = address;
 	}
 
-	public String getZIP() {
-		return ZIP;
+	public String getZip() {
+		return zip;
 	}
 
-	public void setZIP(String zIP) {
-		ZIP = zIP;
+	public void setZip(String zip) {
+		this.zip = zip;
 	}
 
 	public String getFullName() {
-		return FullName;
+		return fullName;
 	}
 
 	public void setFullName(String fullName) {
-		FullName = fullName;
+		this.fullName = fullName;
 	}
 
 	public String getFooDuration() {
-		return FooDuration;
+		return fooDuration;
 	}
 
 	public void setFooDuration(String fooDuration) {
-		FooDuration = fooDuration;
+		this.fooDuration = fooDuration;
 	}
 
 	public String getBarDuration() {
-		return BarDuration;
+		return barDuration;
 	}
 
 	public void setBarDuration(String barDuration) {
-		BarDuration = barDuration;
+		this.barDuration = barDuration;
 	}
 
 	public String getTotalDuration() {
-		return TotalDuration;
+		return totalDuration;
 	}
 
 	public void setTotalDuration(String totalDuration) {
-		TotalDuration = totalDuration;
+		this.totalDuration = totalDuration;
 	}
 
 	public String getNotes() {
-		return Notes;
+		return notes;
 	}
 
 	public void setNotes(String notes) {
-		Notes = notes;
-	}
-	
-	public String toString() {
-		return String.format("%s,%s,%s,%s,%s,%s,%s,%s",
-				Timestamp,Address,ZIP,FullName,FooDuration,BarDuration,TotalDuration,Notes);
+		this.notes = notes;
 	}
 }
