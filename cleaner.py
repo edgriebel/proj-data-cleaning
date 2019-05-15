@@ -52,7 +52,7 @@ def convert_interval(intv_str):
     _i = re.compile('[:.]').split(intv_str)
     _i = list(map(lambda x: int(x), _i))
     _dt = datetime.timedelta(hours=_i[0], minutes=_i[1], seconds=_i[2], milliseconds=_i[3])
-    return _dt.seconds + _dt.microseconds/1e6
+    return _dt.total_seconds() + _dt.microseconds/1e6
 
 
 # In[6]:
