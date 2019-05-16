@@ -7,14 +7,30 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class Converters {
-	public Date timeToEST_EDT(Date d) {
+	/**
+	 * Convert a {@link Date} from Pacific to Eastern timezone by adding 3 hours
+	 * @param d Date in Pacific timezone (with no TZ specified)
+	 * @return Date in Eastern Timezone
+	 */
+	protected Date timeToEST_EDT(Date d) {
+		if (d == null) {
+			return null;
+		}
 		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("US/Eastern"));
 		c.setTime(d);
 		c.add(Calendar.HOUR, 3);
 		return c.getTime();
 	}
 
-	public String convertTimestamp(String ts) {
+	/**
+	 * Convert a string from "MM/dd/yy hh:mm:ss aa" to ISO-8601
+	 * @param ts Timestamp in MM/dd/yy hh:mm:ss aa
+	 * @return date in ISO-8601 format (yyyy-MM-ddTHH:mm:ss-9999)
+	 */
+	protected String convertTimestamp(String ts) {
+		if (ts == null) {
+			return null;
+		}
 		SimpleDateFormat sdfFrom = new SimpleDateFormat("MM/dd/yy hh:mm:ss aa");
 		SimpleDateFormat sdfIso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		try {
@@ -35,7 +51,7 @@ public class Converters {
 	 * @param interval
 	 * @return String formatted in fractional seconds
 	 */
-	public String convertInterval(String interval) {
+	protected String convertInterval(String interval) {
 		if (interval == null) {
 			return null;
 		}
@@ -43,6 +59,11 @@ public class Converters {
 			return "0";
 		}
 		String [] values = interval.split("[:.]");
+		if (values.length < 4) {
+			System.err.printf("Incorrect format for '%s', should be '%s'\n",
+					interval, "HH:MM:SS.MSEC");
+			return "0";
+		}
 		float seconds = Integer.valueOf(values[0]);
 		seconds = seconds * 60 + Integer.valueOf(values[1]);
 		seconds = seconds * 60 + Integer.valueOf(values[2]);
@@ -51,7 +72,14 @@ public class Converters {
 		return seconds + ""; // quick conversion to string
 	}
 	
-	public String add(String x, String y) {
+	/**
+	 * Add 2 numbers in {@link String} format, returning as a string
+	 * <p>Note that they are converted to floats so may show some rounding errors
+	 * @param x First number
+	 * @param y Second Number
+	 * @return numbers added together as a String
+	 */
+	protected String add(String x, String y) {
 		if (x == null || y == null) {
 			return "0";
 		}
@@ -59,13 +87,41 @@ public class Converters {
 		return f+""; // quick conversion to string
 	}
 	
-	public Record fixFields(Record rec) {
-		rec.setTimestamp(convertTimestamp(rec.getTimestamp()));
-		rec.setBarDuration(convertInterval(rec.getBarDuration()));
-		rec.setFooDuration(convertInterval(rec.getFooDuration()));
-		rec.setTotalDuration(add(rec.getFooDuration(), rec.getBarDuration()));
-		rec.setFullName(rec.getFullName().toUpperCase());
-		rec.setZip(String.format("%5s", rec.getZip()).replaceAll(" ", "0"));
-		return rec;
+	/**
+	 * Return a zip code string with leading zeros added to get it to 5 characters long.
+	 * @param zip Partial ZIP code
+	 * @return Zip code with zeros added to left hand side (if required)
+	 */
+	protected String zeroPadZip(String zip) {
+		if (zip == null) {
+			return null;
+		}
+		return String.format("%5s", zip).replaceAll(" ", "0");
+
+	}
+	
+	/**
+	 * Apply the normalizations required.
+	 * <p>A new {@link Record} object is returned, the original is not altered
+	 * 
+	 * @param rec record in
+	 * @return the record sent in with appropriate modifications needed
+	 */
+	public Record fixFields(final Record rec) {
+		if (rec == null) {
+			return null;
+		}
+		final Record out = new Record();
+		out.setTimestamp(convertTimestamp(rec.getTimestamp()));
+		out.setBarDuration(convertInterval(rec.getBarDuration()));
+		out.setFooDuration(convertInterval(rec.getFooDuration()));
+		out.setTotalDuration(add(out.getFooDuration(), out.getBarDuration()));
+		if (rec.getFullName() != null)
+			out.setFullName(rec.getFullName().toUpperCase());
+		out.setZip(zeroPadZip(rec.getZip()));
+		// no change to Address nor Notes
+		out.setAddress(rec.getAddress());
+		out.setNotes(rec.getNotes());
+		return out;
 	}
 }
