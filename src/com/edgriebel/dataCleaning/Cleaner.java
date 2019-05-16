@@ -64,7 +64,7 @@ public class Cleaner {
 				.withMappingStrategy(mappingStrategy)
 				.withApplyQuotesToAll(false)
 				.build();
-		csvwriter.write(records);
+		csvwriter.write(transformedRecs);
 		if (!csvwriter.getCapturedExceptions().isEmpty())
 			System.err.println("*********\nEXCEPTIONS\n*********\n");
 			csvwriter.getCapturedExceptions().stream().peek(System.err::println);
